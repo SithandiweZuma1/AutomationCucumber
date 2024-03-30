@@ -10,19 +10,46 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
 
 public class BookHotel {
     WebDriver driver;
 
     @Given("a user is on the Adactin Hotel App login page")
     public void user_is_on_the_Adactin_Hotel_App_login_page() {
-       
+
+        //hey
         driver = new ChromeDriver();
         driver.get("https://adactinhotelapp.com/index.php");
     }
 
-    @When("the user enters a valid {string} and {string}")
-    public void user_enters_valid_username_and_password(String username, String password) {
+    @When("the user enters a valid username and password")
+    public void user_enters_valid_username_and_password() {
+        String username = "";
+        String password = "";
+        try {
+            Class.forName("org.sqlite.JDBC");
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:src/test/java/Database/hotelDetails.db");
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM hotelDetails WHERE ID=1;");
+
+            while (rs.next()) {
+                username = rs.getString("username");
+                password = rs.getString("password");
+            }
+
+            rs.close();
+            statement.close();
+            connection.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+
         driver.findElement(By.id("username")).sendKeys(username);
         driver.findElement(By.id("password")).sendKeys(password);
         driver.findElement(By.id("login")).click();
@@ -37,24 +64,44 @@ public class BookHotel {
         Assert.assertTrue(searchHotelPage.isDisplayed());
     }
 
-    @When("the user enters the following search criteria {string}, {string}, {string}, {string}, {string},{string},{string}, {string}")
-    public void theUserEntersTheFollowingSearchCriteria(String arg0, String arg1, String arg2, String arg3, String arg4, String arg5, String arg6, String arg7) {
+    @When("the user enters the following search criteria")
+    public void theUserEntersTheFollowingSearchCriteria() {
 
-        driver.findElement(By.id("location")).sendKeys(arg0);
+        String location = "", hotels = "", roomType = "", roomNos = "", datepickIn = "", datepickOut = "", adultRoom = "", childRoom = "";
 
-        driver.findElement(By.id("hotels")).sendKeys(arg1);
+        try {
+            Class.forName("org.sqlite.JDBC");
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:src/test/java/Database/hotelDetails.db");
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM hotelDetails WHERE ID=1;");
 
-        driver.findElement(By.id("room_type")).sendKeys(arg2);
+            while (rs.next()) {
+                location = rs.getString("Location");
+                hotels = rs.getString("Hotel");
+                roomType = rs.getString("RoomType");
+                roomNos = rs.getString("NumberOfRooms");
+                datepickIn = rs.getString("CheckInDate");
+                datepickOut = rs.getString("CheckOutDate");
+                adultRoom = rs.getString("AdultsPerRoom");
+                childRoom = rs.getString("ChildrenPerRoom");
+            }
 
-        driver.findElement(By.id("room_nos")).sendKeys(arg3);
+            rs.close();
+            statement.close();
+            connection.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
 
-        driver.findElement(By.id("datepick_in")).sendKeys(arg4);
-
-        driver.findElement(By.id("datepick_out")).sendKeys(arg5);
-
-        driver.findElement(By.id("adult_room")).sendKeys(arg6);
-
-        driver.findElement(By.id("child_room")).sendKeys(arg7);
+        driver.findElement(By.id("location")).sendKeys(location);
+        driver.findElement(By.id("hotels")).sendKeys(hotels);
+        driver.findElement(By.id("room_type")).sendKeys(roomType);
+        driver.findElement(By.id("room_nos")).sendKeys(roomNos);
+        driver.findElement(By.id("datepick_in")).sendKeys(datepickIn);
+        driver.findElement(By.id("datepick_out")).sendKeys(datepickOut);
+        driver.findElement(By.id("adult_room")).sendKeys(adultRoom);
+        driver.findElement(By.id("child_room")).sendKeys(childRoom);
     }
 
 
@@ -97,16 +144,42 @@ public class BookHotel {
         Assert.assertTrue(bookAhotelPage.isDisplayed());
     }
 
-    @And("the user enters the following booking details {string}, {string}, {string}, {string}, {string}, {string}, {string}, {string}")
-    public void theUserEntersTheFollowingBookingDetails(String arg0, String arg1, String arg2, String arg3, String arg4, String arg5, String arg6, String arg7) {
-        driver.findElement(By.id("first_name")).sendKeys(arg0);
-        driver.findElement(By.id("last_name")).sendKeys(arg1);
-        driver.findElement(By.id("address")).sendKeys(arg2);
-        driver.findElement(By.id("cc_num")).sendKeys(arg3);
-        driver.findElement(By.id("cc_type")).sendKeys(arg4);
-        driver.findElement(By.id("cc_exp_month")).sendKeys(arg5);
-        driver.findElement(By.id("cc_exp_year")).sendKeys(arg6);
-        driver.findElement(By.id("cc_cvv")).sendKeys(arg7);
+    @And("the user enters the following booking details")
+    public void theUserEntersTheFollowingBookingDetails() {
+        String firstName = "", lastName = "", address = "", ccNum = "", ccType = "", ccExpMonth = "", ccExpYear = "", ccCvv = "";
+        try {
+            Class.forName("org.sqlite.JDBC");
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:src/test/java/Database/hotelDetails.db");
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM hotelDetails WHERE ID=1;");
+
+            while (rs.next()) {
+                firstName = rs.getString("FirstName");
+                lastName = rs.getString("LastName");
+                address = rs.getString("BillingAddress");
+                ccNum = rs.getString("CreditCardNo");
+                ccType = rs.getString("CreditCardType");
+                ccExpMonth = rs.getString("ExpiryMonth");
+                ccExpYear = rs.getString("ExpiryYear");
+                ccCvv = rs.getString("CVVNumber");
+            }
+
+            rs.close();
+            statement.close();
+            connection.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+
+        driver.findElement(By.id("first_name")).sendKeys(firstName);
+        driver.findElement(By.id("last_name")).sendKeys(lastName);
+        driver.findElement(By.id("address")).sendKeys(address);
+        driver.findElement(By.id("cc_num")).sendKeys(ccNum);
+        driver.findElement(By.id("cc_type")).sendKeys(ccType);
+        driver.findElement(By.id("cc_exp_month")).sendKeys(ccExpMonth);
+        driver.findElement(By.id("cc_exp_year")).sendKeys(ccExpYear);
+        driver.findElement(By.id("cc_cvv")).sendKeys(ccCvv);
     }
 
     @Then("the booking should be successful, and the user receives a confirmation message")
