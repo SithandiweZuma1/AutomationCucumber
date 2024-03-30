@@ -9,19 +9,14 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.Select;
 
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
 
 public class BookHotel {
     WebDriver driver;
 
     @Given("a user is on the Adactin Hotel App login page")
     public void user_is_on_the_Adactin_Hotel_App_login_page() {
-        System.setProperty("WebDriver.chrome.driver", System.getProperty("User.dir") + "src/test/resources/drivers/chromedriver.exe");
+       
         driver = new ChromeDriver();
         driver.get("https://adactinhotelapp.com/index.php");
     }
@@ -70,7 +65,8 @@ public class BookHotel {
     }
 
     @And("user should be directed to the select  hotel page")
-    public void userShouldBeDirectedToTheSelectHotelPage(
+    public void userShouldBeDirectedToTheSelectHotelPage() {
+
         WebElement searchHotelMessage = driver.findElement(By.xpath( "//td[@class='login_title']"));
         Assert.assertTrue(searchHotelMessage.isDisplayed());
     }
